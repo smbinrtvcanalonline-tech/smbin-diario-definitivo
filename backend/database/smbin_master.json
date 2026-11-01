@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "miguel.rojas",
+      "password": "password123",
+      "fullName": "Miguel Rojas Panduro (Director General)",
+      "role": "director",
+      "email": "redenlace3@gmail.com"
+    }
+  ],
+  "articles": [
+    {
+      "id": 1,
+      "title": "Supervisión fiscal y transparencia en proyectos de infraestructura en Iquitos",
+      "summary": "Monitoreo continuo y análisis técnico sobre el cumplimiento legal y la ejecución presupuestal en la provincia de Maynas.",
+      "content": "Informe oficial sobre la ejecución de obras públicas en la región Loreto, garantizando el cumplimiento de las normativas vigentes.",
+      "image": "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80",
+      "category": "Loreto (8 Provincias)",
+      "province": "Maynas",
+      "source_internal": "Fiscalía Anticorrupción de Loreto - Expediente 2026",
+      "smbin_reflection": "La fiscalización comunitaria y el periodismo independiente son indispensables para resguardar la adecuada inversión de los bienes públicos.",
+      "published_at": "2026-11-01T21:07:14.366Z"
+    }
+  ],
+  "videos": [
+    {
+      "id": 1,
+      "title": "Noticiero Central 'Tú Decides' - Edición Especial Región Loreto",
+      "duration": "45 min",
+      "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "date": "2026-11-01T21:07:14.366Z"
+    }
+  ],
+  "citizen_reports": []
+}

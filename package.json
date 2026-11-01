@@ -1,0 +1,21 @@
+{
+  "name": "smbin-diario-digital-definitivo",
+  "version": "3.0.0",
+  "description": "Plataforma Definitiva SMBIN — Mi Diario Digital y TV 24/7",
+  "main": "backend/api/server.js",
+  "scripts": {
+    "start": "node backend/api/server.js"
+  },
+  "author": "Miguel Rojas Panduro",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^2.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "rss-parser": "^3.13.0",
+    "speakeasy": "^2.0.0",
+    "qrcode": "^1.5.3",
+    "cors": "^2.8.5"
+  }
+}

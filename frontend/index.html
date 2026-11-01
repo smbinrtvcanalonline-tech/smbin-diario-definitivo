@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMBIN — Mi Diario Digital | Loreto, Lima, Perú y el Mundo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header-main">
+        <div class="top-bar">
+            <div class="location">
+                <i class="fa-solid fa-location-dot"></i> Calle Celendín, 1ª Cuadra, Puerto Lao, Iquitos, Loreto | Lima | Perú
+            </div>
+            <div class="contact">
+                <i class="fa-brands fa-whatsapp"></i> Redacción: <strong>+51 973 753 796</strong> | 
+                <i class="fa-regular fa-envelope"></i> redenlace3@gmail.com
+            </div>
+        </div>
+
+        <div class="branding">
+            <div class="logo-box">
+                <h1 class="logo-title">SMBIN</h1>
+                <span class="logo-sub">SOCIAL MEDIA BUSINESS INNOVACIÓN</span>
+                <p class="slogan">“El pueblo tiene la palabra”</p>
+            </div>
+            <div class="live-status">
+                <span class="pulse"></span>
+                <strong>SEÑAL EN VIVO 24/7 (vMix)</strong>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <a href="#" onclick="switchTab('portada')" class="nav-link active" id="link-portada"><i class="fa-solid fa-newspaper"></i> Portada</a>
+            <a href="#" onclick="switchTab('loreto')" class="nav-link" id="link-loreto">Loreto (9 Provincias)</a>
+            <a href="#" onclick="switchTab('lima')" class="nav-link" id="link-lima">Lima / Nacional</a>
+            <a href="#" onclick="switchTab('mundo')" class="nav-link" id="link-mundo">El Mundo</a>
+            <a href="#" onclick="switchTab('tv')" class="nav-link" id="link-tv"><i class="fa-solid fa-tv"></i> SMBIN TV</a>
+            <a href="#" onclick="switchTab('videos')" class="nav-link" id="link-videos"><i class="fa-solid fa-video"></i> Vídeos (30 días)</a>
+            <a href="#" onclick="switchTab('contactos')" class="nav-link" id="link-contactos"><i class="fa-solid fa-address-book"></i> Contactos</a>
+            <a href="#" onclick="openLogin()" class="btn-login" id="btnAdminAccess"><i class="fa-solid fa-user-lock"></i> Acceso Periodistas</a>
+            <a href="#" onclick="logout()" class="btn-logout" id="btnAdminLogout" style="display:none;"><i class="fa-solid fa-right-from-bracket"></i> Salir CMS</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- VISTA PORTADA (Simétrica: Izquierda Noticia Principal / Derecha SMBIN TV) -->
+        <div id="view-portada" class="tab-view active">
+            <div class="hero-grid">
+                <!-- Portada Principal Izquierda -->
+                <div class="main-story-card" id="mainStoryBox">
+                    <div class="card-badge">PORTADA PRINCIPAL</div>
+                    <div id="mainStoryContent">
+                        <!-- Cargado dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- SMBIN TV 24/7 Derecha (Mismo Tamaño Exacto) -->
+                <div class="tv-section-box">
+                    <div class="section-title">
+                        <h2><i class="fa-solid fa-video"></i> SMBIN TV 24/7 — SEÑAL EN DIRECTO</h2>
+                        <span class="vMix-badge">vMix Conectado</span>
+                    </div>
+                    <div class="video-container">
+                        <iframe id="vMixPlayer" src="about:blank" title="SMBIN TV Streaming"></iframe>
+                        <div class="video-overlay" id="vMixOverlay">
+                            <i class="fa-solid fa-circle-play play-icon"></i>
+                            <p>Señal vMix Lista. Haz clic para reproducir 24/7.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Control para Periodistas (Oculto al público) -->
+            <div id="journalistCMSPanel" class="cms-panel" style="display:none;">
+                <h3><i class="fa-solid fa-toolbox"></i> Panel de Gestión Exclusivo para Periodistas (Edición y Fuentes Ocultas)</h3>
+                <div class="cms-actions">
+                    <button class="btn-action green" onclick="openArticleModal()"><i class="fa-solid fa-plus"></i> Nueva Noticia</button>
+                    <button class="btn-action blue" onclick="loadAdminArticles()"><i class="fa-solid fa-list"></i> Administrar / Borrar Noticias</button>
+                </div>
+                <div id="adminArticlesList" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Feed de Noticias Secundarias y Radar -->
+            <div class="sub-news-grid" id="publicNewsContainer">
+                <!-- Noticias publicadas -->
+            </div>
+        </div>
+
+        <!-- VISTA LORETO (9 Provincias) -->
+        <div id="view-loreto" class="tab-view" style="display:none;">
+            <h2>Cobertura Integral — 9 Provincias de Loreto</h2>
+            <p>Maynas, Alto Amazonas, Loreto-Nauta, Mariscal Ramón Castilla, Requena, Ucayali-Contamana, Datem del Marañón, Putumayo y Ramón Castilla.</p>
+            <div id="loretoContainer" class="sub-news-grid"></div>
+        </div>
+
+        <!-- VISTA LIMA / NACIONAL -->
+        <div id="view-lima" class="tab-view" style="display:none;">
+            <h2>Actualidad Lima y Nacional</h2>
+            <div id="limaContainer" class="sub-news-grid"></div>
+        </div>
+
+        <!-- VISTA EL MUNDO -->
+        <div id="view-mundo" class="tab-view" style="display:none;">
+            <h2>Noticias Internacionales</h2>
+            <div id="mundoContainer" class="sub-news-grid"></div>
+        </div>
+
+        <!-- VISTA SMBIN TV -->
+        <div id="view-tv" class="tab-view" style="display:none;">
+            <h2>SMBIN TV 24/7 — Canal de Televisión por Internet</h2>
+            <div class="video-container" style="height: 500px; margin-top: 1rem;">
+                <iframe src="about:blank" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- VISTA VÍDEOS (Historial 30 días) -->
+        <div id="view-videos" class="tab-view" style="display:none;">
+            <h2>Archivo de Vídeos y Programas (Conservados 30 días)</h2>
+            <div id="videosContainer" class="sub-news-grid"></div>
+        </div>
+
+        <!-- VISTA CONTACTOS (Datos del Diario y Periodistas) -->
+        <div id="view-contactos" class="tab-view" style="display:none;">
+            <div class="contact-card">
+                <h2>SMBIN — SOCIAL MEDIA BUSINESS INNOVACIÓN</h2>
+                <p class="slogan-txt">“El pueblo tiene la palabra”</p>
+                <hr>
+                <h3><i class="fa-solid fa-location-dot"></i> Sede Oficial</h3>
+                <p>Calle Celendín, primera cuadra, Puerto Lao, Iquitos, Loreto, Perú.</p>
+                
+                <h3><i class="fa-solid fa-users"></i> Equipo Periodístico y Directivo</h3>
+                <ul>
+                    <li><strong>Miguel Rojas Panduro</strong> — Director General, Productor y Conductor del Noticiero "Tú Decides".</li>
+                    <li><strong>Redacción Central SMBIN</strong> — Investigación, fiscalización y reportes regionales.</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-address-book"></i> Canales Oficiales de Comunicación</h3>
+                <p><i class="fa-brands fa-whatsapp"></i> WhatsApp Redacción: <strong>+51 973 753 796</strong></p>
+                <p><i class="fa-regular fa-envelope"></i> Correo Electrónico: <strong>redenlace3@gmail.com / smbinrtvcanalonline@gmail.com</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login Periodista -->
+    <div class="modal" id="loginModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2>Acceso Exclusivo Periodistas</h2>
+                <span class="close-btn" onclick="closeLogin()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="field"><label>Usuario:</label><input type="text" id="username" value="miguel.rojas" required></div>
+                    <div class="field"><label>Contraseña:</label><input type="password" id="password" value="password123" required></div>
+                    <button type="submit" class="btn-action red">Ingresar al CMS</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editor Noticia (Solo Periodistas) -->
+    <div class="modal" id="articleModal">
+        <div class="modal-box" style="max-width: 700px;">
+            <div class="modal-head">
+                <h2 id="modalArticleTitle">Crear / Editar Noticia</h2>
+                <span class="close-btn" onclick="closeArticleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="articleForm">
+                    <input type="hidden" id="artId">
+                    <div class="field"><label>Título:</label><input type="text" id="artTitle" required></div>
+                    <div class="field"><label>Resumen / Entradilla:</label><textarea id="artSummary" rows="3" required></textarea></div>
+                    <div class="field"><label>URL de Imagen (o subir archivo):</label><input type="text" id="artImage" placeholder="https://..."></div>
+                    <div class="field"><label>Categoría:</label>
+                        <select id="artCategory">
+                            <option value="Loreto (8 Provincias)">Loreto (9 Provincias)</option>
+                            <option value="Lima / Nacional">Lima / Nacional</option>
+                            <option value="El Mundo">El Mundo</option>
+                        </select>
+                    </div>
+                    <div class="field"><label>Fuente Original (Oculto al público, solo visible para periodistas):</label><input type="text" id="artSource" placeholder="Ej: Oficio N° 123 - Gobierno Regional"></div>
+                    <div class="field"><label>La Reflexión SMBIN:</label><textarea id="artReflection" rows="2"></textarea></div>
+                    <button type="submit" class="btn-action green">Guardar Noticia</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-bottom">
+        <p><strong>SMBIN — Social Media Business Innovación</strong> | Director: Miguel Rojas Panduro</p>
+        <p>Calle Celendín 1ª Cuadra, Puerto Lao, Iquitos, Loreto, Perú. WhatsApp: +51 973 753 796</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
