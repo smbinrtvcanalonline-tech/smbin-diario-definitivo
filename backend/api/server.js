@@ -1,4 +1,5 @@
 const express = require('express');
+const { procesarEntradaRadar } = require('./radarService');
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
