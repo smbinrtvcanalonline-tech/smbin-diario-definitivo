@@ -18,6 +18,41 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const upload = multer({ dest: path.join(__dirname, '../uploads') });
 
+// Función para sincronizar y publicar automáticamente en Facebook Graph API
+async function publicarEnFacebook(noticia) {
+    const pageId = process.env.FACEBOOK_PAGE_ID;
+    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+
+    if (!pageId || !accessToken) {
+        console.log("⚠️ Variables de Facebook (FACEBOOK_PAGE_ID / ACCESS_TOKEN) no configuradas en Render.");
+        return;
+    }
+
+    const mensaje = `📰 *${noticia.title}*\n\n${noticia.summary}\n\nLee la noticia completa en nuestro diario digital SMBIN. "El pueblo tiene la palabra".`;
+
+    try {
+        const url = `https://graph.facebook.com/${pageId}/feed`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: mensaje,
+                link: noticia.image || undefined,
+                access_token: accessToken
+            })
+        });
+        
+        const data = await response.json();
+        if (data.id) {
+            console.log("✅ ¡Noticia sincronizada y publicada en Facebook con éxito! ID:", data.id);
+        } else {
+            console.error("❌ Error de Meta al publicar:", data);
+        }
+    } catch (error) {
+        console.error("❌ Error de red al conectar con la API de Facebook:", error);
+    }
+}
+
 // Autenticación Periodista
 app.post('/api/auth/login', (req, res) => {
     const { username, password } = req.body;
@@ -64,8 +99,8 @@ app.get('/api/admin/articles', verifyToken, (req, res) => {
     res.json({ status: 'success', articles: db.articles });
 });
 
-// Publicar o Editar Noticia (Solo Periodista)
-app.post('/api/admin/articles', verifyToken, upload.single('image_file'), (req, res) => {
+// Publicar o Editar Noticia (Solo Periodista) y Auto-post en Facebook
+app.post('/api/admin/articles', verifyToken, upload.single('image_file'), async (req, res) => {
     const { id, title, summary, content, category, province, source_internal, smbin_reflection, image_url } = req.body;
     const db = getDB();
     
@@ -74,11 +109,14 @@ app.post('/api/admin/articles', verifyToken, upload.single('image_file'), (req, 
         imageUrl = `/uploads/${req.file.filename}`;
     }
 
+    let noticiaAfectada;
+
     if (id) {
         // Editar
         const index = db.articles.findIndex(a => a.id == id);
         if (index !== -1) {
             db.articles[index] = { ...db.articles[index], title, summary, content, category, province, source_internal, smbin_reflection, image: imageUrl };
+            noticiaAfectada = db.articles[index];
         }
     } else {
         // Crear nueva
@@ -95,9 +133,14 @@ app.post('/api/admin/articles', verifyToken, upload.single('image_file'), (req, 
             published_at: new Date().toISOString()
         };
         db.articles.unshift(newArt);
+        noticiaAfectada = newArt;
+
+        // Disparar la publicación automática a Facebook de forma asíncrona
+        await publicarEnFacebook(newArt);
     }
+
     saveDB(db);
-    res.json({ status: 'success', message: 'Noticia guardada y actualizada con éxito.' });
+    res.json({ status: 'success', message: 'Noticia guardada, actualizada y sincronizada con éxito.' });
 });
 
 // Borrar Noticia (Solo Periodista)
