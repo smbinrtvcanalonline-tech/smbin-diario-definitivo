@@ -199,5 +199,9 @@ app.post('/api/certificar/:id', async (req, res) => {
     } catch (error) {
         console.error('[Error de Certificación]:', error);
         res.status(500).json({ success: false, error: error.message });
+        const { publicarEnFacebook } = require('../socialSyndication');
+
+// Dentro de tu lógica cuando una noticia se publica (ya sea por el radar oficial o por certificación):
+// await publicarEnFacebook(noticiaPublicada);
     }
 });
