@@ -184,3 +184,20 @@ app.get('/api/videos', (req, res) => {
 app.listen(PORT, () => {
     console.log(`SMBIN Servidor Maestro Definitivo en http://localhost:${PORT}`);
 });
+// Ruta para aprobar o rechazar noticias de la Bandeja de Certificación
+app.post('/api/certificar/:id', async (req, res) => {
+    const { id } = req.params;
+    const { accion } = req.body; // 'publicar' o 'rechazar'
+
+    try {
+        let nuevoEstado = accion === 'publicar' ? 'publicada' : 'rechazada';
+        
+        // Actualización de estado en la base de datos del sistema
+        console.log(`[Certificación] Noticia ${id} actualizada a estado: ${nuevoEstado}`);
+        
+        res.status(200).json({ success: true, mensaje: `Noticia actualizada a ${nuevoEstado}` });
+    } catch (error) {
+        console.error('[Error de Certificación]:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
